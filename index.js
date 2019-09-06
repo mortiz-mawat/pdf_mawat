@@ -22,6 +22,8 @@ const q = queue(async ({ res, html }, callback) => {
     await browser.close();
   }
 
+  console.log('aaa')
+
   if (!result.status) {
     send(res, 500, result);
     return callback();
