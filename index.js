@@ -13,7 +13,8 @@ const q = queue(async ({ res, html }, callback) => {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
-    result.result = (await page.pdf({ format: 'A4', printBackground: true })).toString('base64');
+    // result.result = (await page.pdf({ format: 'A4', printBackground: true })).toString('base64');
+    result.result = 'aa';
   } catch (error) {
     console.log(error);
     result.status = false;
