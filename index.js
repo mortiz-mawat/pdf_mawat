@@ -6,10 +6,10 @@ const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
 const q = queue(async ({ res, html }, callback) => {
-  const browser = await puppeteer.launch({ headless: false });
-  const result = { status: true };
-
   try {
+    const browser = await puppeteer.launch();
+    const result = { status: true };
+
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
