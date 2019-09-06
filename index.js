@@ -26,7 +26,7 @@ const q = queue(async ({ res, html }, callback) => {
     result.error = JSON.stringify(error);
   }
 
-  browser.close().catch(console.error);
+  // browser.close().catch(console.error);
 
   console.log('aaa')
 
