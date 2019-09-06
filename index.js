@@ -6,7 +6,7 @@ const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
 const q = queue(async ({ res, html }, callback) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: false });
   const result = { status: true };
 
   try {
