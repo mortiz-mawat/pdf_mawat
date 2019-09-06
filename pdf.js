@@ -5,7 +5,7 @@ const queue = require('async/queue');
 
 async function aa() {
   const html = 'PGRpdj5hYWFhPC9kaXY+';
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox --disable-setuid-sandbox'] });
   const result = { status: true };
 
   try {
