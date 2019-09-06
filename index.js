@@ -24,10 +24,9 @@ const q = queue(async ({ res, html }, callback) => {
     console.log(error);
     result.status = false;
     result.error = JSON.stringify(error);
-  } finally {
-    console.log('4')
-    browser.close().catch(console.error);
   }
+
+  browser.close().catch(console.error);
 
   console.log('aaa')
 
