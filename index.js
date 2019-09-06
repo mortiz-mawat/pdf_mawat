@@ -6,29 +6,21 @@ const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
 const q = queue(async ({ res, html }, callback) => {
+  const browser = await puppeteer.launch();
+  const result = { status: true };
+
   try {
-    console.log('0')
-    const browser = await puppeteer.launch({ args: ['--no-sandbox --disable-setuid-sandbox'] });
-    const result = { status: true };
-
-    console.log('1')
-
     const page = await browser.newPage();
-    console.log('2')
     await page.setContent(html, { waitUntil: 'networkidle0' });
-    console.log('3')
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
-    // result.result = (await page.pdf({ format: 'A4', printBackground: true })).toString('base64');
-    result.result = 'aa';
+    result.result = (await page.pdf({ format: 'A4', printBackground: true })).toString('base64');
   } catch (error) {
     console.log(error);
     result.status = false;
     result.error = JSON.stringify(error);
   }
 
-  // browser.close().catch(console.error);
-
-  console.log('aaa')
+  await browser.close();
 
   if (!result.status) {
     send(res, 500, result);
