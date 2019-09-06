@@ -10,8 +10,12 @@ const q = queue(async ({ res, html }, callback) => {
     const browser = await puppeteer.launch({ args: ['--no-sandbox --disable-setuid-sandbox'] });
     const result = { status: true };
 
+    console.log('1')
+
     const page = await browser.newPage();
+    console.log('2')
     await page.setContent(html, { waitUntil: 'networkidle0' });
+    console.log('3')
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
     // result.result = (await page.pdf({ format: 'A4', printBackground: true })).toString('base64');
     result.result = 'aa';
@@ -20,6 +24,7 @@ const q = queue(async ({ res, html }, callback) => {
     result.status = false;
     result.error = JSON.stringify(error);
   } finally {
+    console.log('4')
     browser.close().catch(console.error);
   }
 
