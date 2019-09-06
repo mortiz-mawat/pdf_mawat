@@ -7,6 +7,7 @@ const REQUESTQUEUELIMIT = 2;
 
 const q = queue(async ({ res, html }, callback) => {
   try {
+    console.log('0')
     const browser = await puppeteer.launch({ args: ['--no-sandbox --disable-setuid-sandbox'] });
     const result = { status: true };
 
