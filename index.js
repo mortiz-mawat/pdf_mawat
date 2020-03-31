@@ -47,7 +47,7 @@ const server = micro(async (req, res) => {
     return send(res, 404, { status: false });
   }
 
-  const body = await json(req);
+  const body = await json(req).catch(() => {});
   const html = body.base64 ? String(Buffer.from(body.base64, 'base64')) : body.text;
 
   if (!html) {
