@@ -5,26 +5,26 @@ const queue     = require('async/queue');
 const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
-const q = queue(async ({ res, html, options }, callback) => {
+async function digestQueue({ res, html, options }, callback) {
   const browser = await puppeteer.launch();
   const result = { status: true };
 
   try {
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: "networkidle0" });
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
 
     const pdfOptions = {
-      format: 'A4',
+      format: "A4",
       printBackground: true,
       displayHeaderFooter: false,
       scale: 1,
       landscape: false,
-      pageRanges: '',
+      pageRanges: "",
       ...options
     };
 
-    result.result = (await page.pdf(pdfOptions)).toString('base64');
+    result.result = (await page.pdf(pdfOptions)).toString("base64");
   } catch (error) {
     console.log(error);
     result.status = false;
@@ -40,14 +40,17 @@ const q = queue(async ({ res, html, options }, callback) => {
 
   send(res, 200, result);
   return callback();
-}, REQUESTQUEUELIMIT);
+}
+
+const printPdfQueue = queue(digestQueue, REQUESTQUEUELIMIT);
 
 const server = micro(async (req, res) => {
   if (req.method !== 'POST') {
     return send(res, 404, { status: false });
   }
 
-  const body = await json(req).catch(() => {});
+  const body = await json(req).catch(() => ({}));
+
   const html = body.base64 ? String(Buffer.from(body.base64, 'base64')) : body.text;
 
   if (!html) {
@@ -56,8 +59,9 @@ const server = micro(async (req, res) => {
 
   const options = body.options || {};
 
-  q.push({ req, res, html, options });
+  printPdfQueue.push({ req, res, html, options });
 })
 
-server.listen(3003);
-console.log('Server ON: http://localhost:3003');
+server.listen(3003, () => {
+  console.log('Server ON: http://localhost:3003');
+});
