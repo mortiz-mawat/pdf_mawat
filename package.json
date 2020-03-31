@@ -1,17 +1,13 @@
 {
-  "name": "pdfGenerator",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tagoio-pdf-generator",
+  "version": "1.1.0",
+  "private": true,
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Tago LLC",
+  "license": "Copyright",
   "dependencies": {
-    "async": "3.1.0",
+    "async": "3.2.0",
     "micro": "9.3.4",
-    "puppeteer": "1.19.0"
+    "puppeteer": "2.1.1"
   }
 }

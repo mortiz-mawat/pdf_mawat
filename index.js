@@ -5,7 +5,7 @@ const queue     = require('async/queue');
 const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
-const q = queue(async ({ res, html, req_options }, callback) => {
+const q = queue(async ({ res, html, options }, callback) => {
   const browser = await puppeteer.launch();
   const result = { status: true };
 
@@ -13,20 +13,18 @@ const q = queue(async ({ res, html, req_options }, callback) => {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
-    const options = {
-      format: req_options.format || 'A4',
-      printBackground: req_options.printBackground || true,
-      displayHeaderFooter: req_options.displayHeaderFooter || false,
-      headerTemplate: req_options.headerTemplate || undefined,
-      footerTemplate: req_options.footerTemplate || undefined,
-      scale: req_options.scale || 1,
-      landscape: req_options.landscape || false,
-      pageRanges: req_options.pageRanges || '',
-      margin: req_options.margin || undefined,
-      width: req_options.width || undefined,
-      height: req_options.height || undefined,
+
+    const pdfOptions = {
+      format: 'A4',
+      printBackground: true,
+      displayHeaderFooter: false,
+      scale: 1,
+      landscape: false,
+      pageRanges: '',
+      ...options
     };
-    result.result = (await page.pdf(options)).toString('base64');
+
+    result.result = (await page.pdf(pdfOptions)).toString('base64');
   } catch (error) {
     console.log(error);
     result.status = false;
@@ -56,10 +54,10 @@ const server = micro(async (req, res) => {
     return send(res, 400, { status: false, error: 'no field' });
   }
 
-  const req_options = body.options || {};
+  const options = body.options || {};
 
-  q.push({ req, res, html, req_options });
+  q.push({ req, res, html, options });
 })
 
 server.listen(3003);
-console.log('Server ON');
+console.log('Server ON: http://localhost:3003');
