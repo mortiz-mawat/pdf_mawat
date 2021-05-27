@@ -50,7 +50,7 @@ const server = micro(async (req, res) => {
     return send(res, 404, { status: false });
   }
 
-  const body = await json(req, { limit: '2mb' }).catch(() => ({}));
+  const body = await json(req, { limit: '30mb' }).catch(() => ({}));
 
   const html = body.base64 ? String(Buffer.from(body.base64, 'base64')) : body.text;
   if (!html) {
