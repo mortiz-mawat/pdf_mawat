@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const micro     = require('micro')
 const queue     = require('async/queue');
+const config = require('./config');
 
 const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
@@ -53,7 +54,7 @@ const server = micro(async (req, res) => {
 
   const html = body.base64 ? String(Buffer.from(body.base64, 'base64')) : body.text;
   if (!html) {
-    return send(res, 400, { status: false, error: 'no field' });
+    return send(res, 400, { status: false, error: 'HTML base64 not provided' });
   }
 
   const options = body.options || {};
@@ -61,6 +62,6 @@ const server = micro(async (req, res) => {
   printPdfQueue.push({ req, res, html, options });
 })
 
-server.listen(3003, () => {
-  console.log('Server ON: http://localhost:3003');
+server.listen(config.port, () => {
+  console.log(`Server ON: http://localhost:${config.port}`);
 });
