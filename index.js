@@ -7,10 +7,21 @@ const { json, send } = micro;
 const REQUESTQUEUELIMIT = 2;
 
 async function digestQueue({ res, html, options }, callback) {
-  const browser = await puppeteer.launch();
+  console.log('start');
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+          ]
+  });
+  console.log('end');
   const result = { status: true };
 
   try {
+    console.log(2);
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
     // await page.pdf({ path: 'example.pdf', format: 'A4', printBackground: true }); //? Debug (gen pdf on project folder);
@@ -25,6 +36,7 @@ async function digestQueue({ res, html, options }, callback) {
       ...options
     };
 
+    console.log(1);
     result.result = (await page.pdf(pdfOptions)).toString("base64");
   } catch (error) {
     console.log(error);
@@ -32,6 +44,7 @@ async function digestQueue({ res, html, options }, callback) {
     result.error = JSON.stringify(error);
   }
 
+  console.log(result);
   await browser.close();
 
   if (!result.status) {
